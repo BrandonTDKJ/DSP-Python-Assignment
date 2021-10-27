@@ -1,8 +1,8 @@
 DSP-Python-Assignment
 ===============
 
-There are group assignments of Digital Signal Process from UofG Postgraduate.
--------------
+##There are group assignments of Digital Signal Process from UofG Postgraduate.
+
 
 <br>[Assignment 1](https://github.com/BrandonDort09/DSP-Python-Assignment/tree/main/Assignment%201)
 <br>The first assignment is about detecting voice and improving voice quality by using Fourier Transform in Python.
