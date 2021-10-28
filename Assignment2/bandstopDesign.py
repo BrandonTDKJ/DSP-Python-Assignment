@@ -1,6 +1,6 @@
 import numpy as np
 
-def bandpassDesign(Fs, cutoff_1, cutoff_2, del_F = 1):
+def bandstopDesign(Fs, cutoff_1, cutoff_2, del_F = 1):
 
     #Select number of taps using the formula for resolution. Default resolution is 1
     M = Fs / del_F
