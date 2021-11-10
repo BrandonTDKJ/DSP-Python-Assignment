@@ -9,6 +9,8 @@ def highpassDesign(sampling_rate,cutoff_frequencies,Frequency_Resolution):
     X = np.ones(M)
     X[0:k] = 0
     X[M - k:M - 1] = 0
+    X = np.hamming(M)
+
     return X
 
 
@@ -23,8 +25,16 @@ def bandstopDesign(sampling_rate,cutoff_frequencies,Frequency_Resolution):
         X[k1:k2+1] = 0
         X[M-k2:M-k1+1] = 0
         X = np.real(X)
+        X = np.hamming(M)
+
         return X
 
+
+def ifft(coefficients):
+    x = np.fft.ifft(coefficients)
+    x = np.real(x)
+
+    return x
 
 class FIRfilter:
     def __init__(self,_coefficients,Frequency_Resolution = 1):
@@ -65,18 +75,14 @@ if __name__ == '__main__':
 
     #elminating baseline wander
     coefficients= highpassDesign(250, cutoff_frequencies, Frequency_Resolution)
-    x = np.fft.ifft(coefficients)
-    x = np.real(x)
+    x = ifft(coefficients)
     HighPassFilter = FIRfilter(x)
     for i in range(len(data)):
         OutputAfterHighpassFilter[i] =  HighPassFilter.dofilter(data[i])
 
-
-
     # Create BandStop filter to filter the signal with 50Hz frequency
     coefficients1 = bandstopDesign(250, cutoff_frequencies1, Frequency_Resolution)
-    x = np.fft.ifft(coefficients1)
-    x = np.real(x)
+    x = ifft(coefficients1)
     filter1 = FIRfilter(x)
 
     for i in range(len(data)):

@@ -20,6 +20,8 @@ def highpassDesign(sampling_rate,cutoff_frequencies,Frequency_Resolution):
     X = np.ones(M)
     X[0:k] = 0
     X[M - k:M - 1] = 0
+
+    X = np.hamming(M)
     return X
 
 
@@ -27,13 +29,15 @@ def highpassDesign(sampling_rate,cutoff_frequencies,Frequency_Resolution):
 
 def bandstopDesign(sampling_rate,cutoff_frequencies,Frequency_Resolution):
         fs = sampling_rate
-        M = fs / Frequency_Resolution
+        M = int(fs / Frequency_Resolution)
         k1 = int(cutoff_frequencies[0]/fs * M)
         k2 = int(cutoff_frequencies[1] / fs * M)
         X = np.ones(M)
         X[k1:k2+1] = 0
         X[M-k2:M-k1+1] = 0
         X = np.real(X)
+
+        X = np.hamming(M)
         return X
 
 if __name__ == '__main__':

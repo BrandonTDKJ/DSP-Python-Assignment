@@ -16,6 +16,9 @@ def highpassDesign(sampling_rate,cutoff_frequencies,Frequency_Resolution):
     X = np.ones(M)
     X[0:k] = 0
     X[M - k:M - 1] = 0
+
+    X = np.hamming(M)
+
     return X
 
 
@@ -30,8 +33,15 @@ def bandstopDesign(sampling_rate,cutoff_frequencies,Frequency_Resolution):
         X[k1:k2+1] = 0
         X[M-k2:M-k1+1] = 0
         X = np.real(X)
+        X = np.hamming(M)
+
         return X
 
+def ifft(coefficients):
+    x = np.fft.ifft(coefficients)
+    x = np.real(x)
+
+    return x
 
 class FIRfilter:
     def __init__(self,_coefficients,Frequency_Resolution = 1):
@@ -46,6 +56,7 @@ class FIRfilter:
 
         return np.inner(self.buffer, self.coefficients)
 
+
 if __name__ == '__main__':
     data = np.loadtxt('ECG_ugrad_matric_9.dat')
     Frequency_Resolution = 1
@@ -55,21 +66,21 @@ if __name__ == '__main__':
     # create bandstop filter
     cutoff_frequencies1 = [45, 55]
     coefficients1 = bandstopDesign(250, cutoff_frequencies1, Frequency_Resolution)
-    x = np.fft.ifft(coefficients1)
+    x = ifft(coefficients1)
     x = np.real(x)
     filter1 = FIRfilter(x)
 
     #create high pass filter
     cutoff_frequencies2 = 5
     coefficients2 = highpassDesign(250, cutoff_frequencies2, Frequency_Resolution)
-    x = np.fft.ifft(coefficients2)
-    x = np.real(x)
+    x = ifft(coefficients2)
     filter2 = FIRfilter(x)
 
     #Processing of eliminating baseline wander
     for i in range(len(data)):
         OutputAfterHighpassFilter[i]= filter1.dofilter(data[i])
 
+    #eliminating 50Hz
     for i in range(len(data)):
         OutputAfterBandStopFilter[i] = filter2.dofilter(OutputAfterHighpassFilter[i])
 
